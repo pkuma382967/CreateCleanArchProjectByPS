@@ -1,7 +1,8 @@
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=myServer;Database=myDb;User Id=myUser;Password=myPass;",
+    "DefaultConnection": "Server=myServer;Database=myDB;User Id=myUser;Password=myPassword;",
     "DefaultNew": "Server=tt;Database=tt;User Id=tt;Password=tt;"
   },
-  "SolutionName": "NameFromJson"
+  "SolutionName": "MySolution",
+  "IsSerilogEnabled": true
 }

@@ -5,14 +5,7 @@ $jsonContent = Get-Content -Path "variable.json" | ConvertFrom-Json
 $SolutionName = $jsonContent.SolutionName
 $DefaultConnection = $jsonContent.ConnectionStrings
 $ConnectionString = $jsonContent.ConnectionStrings.DefaultConnection
-
-
-
-
-#param(
-#    [string]$SolutionName = $solName,
-#    [string]$ConnectionString = $conString
-#)
+$IsSerilogEnabled = $jsonContent.IsSerilogEnabled
 
 # Create the solution folder and navigate into it
 New-Item -Path $SolutionName -ItemType Directory
@@ -70,19 +63,20 @@ $AppSettingsPath = "$SolutionName.Api/appsettings.json"
 # Read the appsettings.json
 $jsonContent1 = Get-Content $AppSettingsPath -Raw | ConvertFrom-Json
 
-
 Write-Host "Connection string updated in $DefaultConnection" -ForegroundColor Blue
 
-# Step 3: Copy ConnectionStrings if missing
+# Step 6: Copy ConnectionStrings if missing
 if (-not $jsonContent1.PSObject.Properties.Match('ConnectionStrings') -or $null -eq $jsonContent1.ConnectionStrings) {
     $jsonContent1 | Add-Member -MemberType NoteProperty -Name 'ConnectionStrings' -Value $DefaultConnection
 }
 
-
-
 # Write back to the file
 $jsonContent1 | ConvertTo-Json -Depth 10 | Set-Content $AppSettingsPath
 
-
-
 Write-Host "Connection string updated in appsettings.json" -ForegroundColor Green
+
+# Step 7: Add Serilog if enabled
+if ($IsSerilogEnabled -eq $true) {
+    . .\Add-Serilog.ps1 -SolutionName $SolutionName
+    Write-Host "Serilog has been added to the project." -ForegroundColor Green
+}
